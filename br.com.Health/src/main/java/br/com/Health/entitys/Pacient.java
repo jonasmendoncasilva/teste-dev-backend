@@ -1,9 +1,9 @@
 package br.com.Health.entitys;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.util.Date;
+import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -18,19 +18,18 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-@Document(collection="client")
-public class Client implements Serializable {
+@Document
+public class Pacient implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
 	private String id;
 	
 	private String name;
-	private LocalDate birthDate;
+	private Date birthDate;
 	private char gender;
-	private LocalDate creationDate;
-	private LocalDate updateDate;
+	private Date creationDate;
+	private Date updateDate;
 	
-	@Autowired
-	private HealthInssue healthInssue;
+	private List<HealthInssue> healthInssue;
 }
