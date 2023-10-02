@@ -3,6 +3,7 @@ package br.com.Health.entitys;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -32,4 +33,13 @@ public class Pacient implements Serializable {
 	private Date updateDate;
 	
 	private List<HealthInssue> healthInssue;
+
+	public Pacient (Optional<Pacient> pacient) {
+	
+		this.name = pacient.get().getName();
+		this.birthDate = pacient.get().getBirthDate();
+		this.gender = pacient.get().getGender();
+		this.creationDate = pacient.get().getCreationDate();
+		this.updateDate = pacient.get().getUpdateDate();
+	}
 }
