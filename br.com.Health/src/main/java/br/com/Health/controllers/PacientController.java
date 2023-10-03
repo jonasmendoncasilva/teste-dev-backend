@@ -51,11 +51,11 @@ public class PacientController {
 	
 	@RequestMapping(value="/update")
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Pacient> checkRisk(@RequestBody Pacient pacient) throws Exception{
+	public ResponseEntity<List<Pacient>> checkRisk(@RequestBody Pacient pacient) throws Exception{
 		
 		List<Pacient> pacients = service.checkRisk(); 
 		
-		return ResponseEntity.ok().body(p);
+		return ResponseEntity.ok().body(pacients);
 	}
 
 	
