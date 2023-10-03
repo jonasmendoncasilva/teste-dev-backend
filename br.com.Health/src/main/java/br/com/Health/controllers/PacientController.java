@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,16 +24,20 @@ public class PacientController {
 	private PacientService service;
 	
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<Pacient>> findAll(){
-		
+	public ResponseEntity<List<Pacient>> findAll() throws Exception{		
 		List<Pacient> list = service.findAll();
 		return ResponseEntity.ok().body(list);
+	}
+	
+	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Pacient> save(@RequestBody Pacient pacient) throws Exception{		
+		Pacient client = service.savePacient(pacient);
+		return ResponseEntity.ok().body(client);
 	}
 	
 	@RequestMapping(value="/{id}")
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Pacient> findById(@PathVariable String id) throws Exception{
-		
 		Pacient pacient = service.findById(id);
 		return ResponseEntity.ok().body(pacient);
 	}
@@ -40,7 +45,18 @@ public class PacientController {
 	@RequestMapping(value="/update")
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Pacient> update(@RequestBody Pacient pacient) throws Exception{
-		Pacient p = new Pacient(service.update(pacient));
+		Pacient client = new Pacient(service.update(pacient));
+		return ResponseEntity.ok().body(client);
+	}
+	
+	@RequestMapping(value="/update")
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Pacient> checkRisk(@RequestBody Pacient pacient) throws Exception{
+		
+		List<Pacient> pacients = service.checkRisk(); 
+		
 		return ResponseEntity.ok().body(p);
 	}
+
+	
 }
