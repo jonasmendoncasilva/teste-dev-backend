@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,9 +45,9 @@ public class PacientController {
 	}
 	
 	@RequestMapping(value="/update")
-	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Pacient> update(@RequestBody Pacient pacient) throws Exception{
-		Pacient client = new Pacient(service.update(pacient));
+		Pacient client = service.update(pacient);
 		return ResponseEntity.ok().body(client);
 	}
 	

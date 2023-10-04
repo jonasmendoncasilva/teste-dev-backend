@@ -36,10 +36,12 @@ public class Pacient implements Serializable {
 
 	public Pacient (Optional<Pacient> pacient) {
 	
+		this.id = pacient.get().getId();
 		this.name = pacient.get().getName();
 		this.birthDate = pacient.get().getBirthDate();
 		this.gender = pacient.get().getGender();
 		this.creationDate = pacient.get().getCreationDate();
 		this.updateDate = pacient.get().getUpdateDate();
+		this.healthInssue = pacient.get().getHealthInssue();
 	}
 }

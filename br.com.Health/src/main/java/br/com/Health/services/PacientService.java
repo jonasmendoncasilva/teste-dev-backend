@@ -36,7 +36,7 @@ public class PacientService {
 		return pacient.orElseThrow(()-> new Exception("Pacient not Found!!"));
 	}
 
-	public Optional<Pacient> update(Pacient pacient) throws Exception {
+	public Pacient update(Pacient pacient) throws Exception {
 		Optional<Pacient> pacientFromData = repo.findById(pacient.getId());
 		
 		if(pacientFromData.isPresent()) {
@@ -57,7 +57,9 @@ public class PacientService {
 		else {
 			throw new Exception("Id not found!!");
 		}
-		return pacientFromData;
+		Pacient p = new Pacient(pacientFromData);
+		repo.save(p);
+		return p;
 	}
 
 	public Pacient savePacient(Pacient pacient) {
