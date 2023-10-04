@@ -17,6 +17,9 @@ import br.com.Health.entitys.HealthInssue;
 import br.com.Health.entitys.Pacient;
 import br.com.Health.entitys.PacientScore;
 import br.com.Health.entitys.DTO.PacientEndangered;
+import br.com.Health.exceptions.InssueRateException;
+import br.com.Health.exceptions.ListSizeException;
+import br.com.Health.exceptions.PacientNotFoundException;
 import br.com.Health.exceptions.PacientsNotFoundException;
 import br.com.Health.repository.PacientRepository;
 
@@ -32,12 +35,12 @@ public class PacientService {
 		return pacients;
 	}
 
-	public Pacient findById(String id) throws Exception {
+	public Pacient findById(String id){
 		Optional<Pacient> pacient = repo.findById(id);
-		return pacient.orElseThrow(()-> new Exception("Pacient not Found!!"));
+		return pacient.orElseThrow(()-> new PacientNotFoundException("Pacient not Found!!"));
 	}
 
-	public Pacient update(Pacient pacient) throws Exception {
+	public Pacient update(Pacient pacient){
 		Optional<Pacient> pacientFromData = repo.findById(pacient.getId());
 		
 		if(pacientFromData.isPresent()) {
@@ -50,37 +53,55 @@ public class PacientService {
 			pacientFromData.get().setUpdateDate(Date.from(Instant.now()));
 			pacientFromData.get().setGender(pacient.getGender());
 			
-			for(int i=0; i<pacient.getHealthInssue().size();i++) {
+			for(int i=0; i < pacient.getHealthInssue().size() - 1;i++) {
 				pacientFromData.get().getHealthInssue().get(i).setName(pacient.getHealthInssue().get(i).getName());
 				pacientFromData.get().getHealthInssue().get(i).setRate(pacient.getHealthInssue().get(i).getRate());
 			}	
 		}
 		else {
-			throw new Exception("Id not found!!");
+			throw new PacientNotFoundException("Pacient not Found!!");
 		}
 		Pacient p = new Pacient(pacientFromData);
-		repo.save(p);
-		return p;
+		return repo.save(p);
 	}
 
 	public Pacient savePacient(Pacient pacient) {
-		Pacient client = repo.save(pacient);
-		return client;
+		
+		try {
+			for (HealthInssue inssue : pacient.getHealthInssue()) {
+				if(inssue.getRate()<1 || inssue.getRate()>2 ) throw new InssueRateException("The Rate must be between 1 and 2");
+			}
+			Pacient client = repo.save(pacient);
+			return client;
+		} catch (InssueRateException e) {
+			e.getStackTrace();
+			return null;
+		}
+		
 	}
 
-	public List<PacientEndangered> checkRisk() throws Exception {
-		List<Pacient> pacients = repo.findAll();
-		List<PacientScore> pacientScore;
-		List<PacientScore> topPacientScore; 
+	public List<PacientEndangered> checkRisk(){
 		
-		pacientScore = pacients.stream().map(pacient -> new PacientScore(pacient.getId(), calculateScore(pacient))).collect(Collectors.toList());
-		topPacientScore = pacientScore.stream().sorted(Comparator.comparingDouble(PacientScore::getScore).reversed()).limit(10).collect(Collectors.toList());
+		try {
+			List<Pacient> pacients = repo.findAll();
 		
-		List<Pacient> riskGroup = createRiskGroup(pacients, topPacientScore);
+			if(pacients.size()<10) throw new ListSizeException("The size of list is less than 10!!!");
 		
-		List<PacientEndangered> pacientsEndangered; 
-		pacientsEndangered= riskGroup.stream().map(pacient -> new PacientEndangered(pacient)).collect(Collectors.toList());
-		return pacientsEndangered;
+			List<PacientScore> pacientScore;
+			List<PacientScore> topPacientScore; 
+		
+			pacientScore = pacients.stream().map(pacient -> new PacientScore(pacient.getId(), calculateScore(pacient))).collect(Collectors.toList());
+			topPacientScore = pacientScore.stream().sorted(Comparator.comparingDouble(PacientScore::getScore).reversed()).limit(10).collect(Collectors.toList());
+		
+			List<Pacient> riskGroup = createRiskGroup(pacients, topPacientScore);
+		
+			List<PacientEndangered> pacientsEndangered; 
+			pacientsEndangered= riskGroup.stream().map(pacient -> new PacientEndangered(pacient)).collect(Collectors.toList());
+			return pacientsEndangered;
+		} catch (ListSizeException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	public Double calculateScore(Pacient pacient) {

@@ -18,4 +18,25 @@ public class ExceptionHandlerController {
 		StandardError error = new StandardError(Instant.now(), status.value(), e.getMessage(), request.getRequestURI());
 		return ResponseEntity.status(status).body(error);
 	}
+	
+	@ExceptionHandler(PacientNotFoundException.class)
+	public ResponseEntity<StandardError> entityNotFound(PacientNotFoundException e, HttpServletRequest request){
+		HttpStatus status = HttpStatus.NOT_FOUND;
+		StandardError error = new StandardError(Instant.now(), status.value(), e.getMessage(), request.getRequestURI());
+		return ResponseEntity.status(status).body(error);
+	}
+	
+	@ExceptionHandler(ListSizeException.class)
+	public ResponseEntity<StandardError> listSize(ListSizeException e, HttpServletRequest request){
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		StandardError error = new StandardError(Instant.now(), status.value(), e.getMessage(), request.getRequestURI());
+		return ResponseEntity.status(status).body(error);
+	}
+	
+	@ExceptionHandler(InssueRateException.class)
+	public ResponseEntity<StandardError> inssueRateError(InssueRateException e, HttpServletRequest request){
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		StandardError error = new StandardError(Instant.now(), status.value(), e.getMessage(), request.getRequestURI());
+		return ResponseEntity.status(status).body(error);
+	}
 }
