@@ -27,11 +27,9 @@ public class TestConfig implements CommandLineRunner {
 		repo.deleteAll();
 		
 		HealthInssue h1 = new HealthInssue("diabetes", 1);
-		HealthInssue h2 = new HealthInssue("diabetes", 2);
-		
+		HealthInssue h2 = new HealthInssue("diabetes", 2);	
 		HealthInssue h3 = new HealthInssue("hepatite", 1);
 		HealthInssue h4 = new HealthInssue("hepatite", 2);
-		
 		
 		Pacient p1 = new Pacient(null, "Maria", sdf.parse("30-08-2001"), 'F', sdf.parse("30-08-2001"),sdf.parse("30-08-2001"), Arrays.asList(h1,h2,h3,h4));
 		Pacient p2 = new Pacient(null, "José", sdf.parse("30-08-2001"), 'M', sdf.parse("30-08-2001"),sdf.parse("30-08-2001"), Arrays.asList(h3,h4));
@@ -44,10 +42,7 @@ public class TestConfig implements CommandLineRunner {
 		Pacient p9 = new Pacient(null, "Humberto", sdf.parse("30-08-2001"), 'M', sdf.parse("30-08-2001"),sdf.parse("30-08-2001"), Arrays.asList(h3,h4));
 		Pacient p10 = new Pacient(null, "Beatriz", sdf.parse("30-08-2001"), 'M', sdf.parse("30-08-2001"),sdf.parse("30-08-2001"), Arrays.asList(h2,h1));
 		Pacient p11 = new Pacient(null, "Juliana", sdf.parse("30-08-2001"), 'M', sdf.parse("30-08-2001"),sdf.parse("30-08-2001"), Arrays.asList(h2,h3,h4));
-		
-		
+			
 		repo.saveAll(Arrays.asList(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11));
 	}
-
-	
 }

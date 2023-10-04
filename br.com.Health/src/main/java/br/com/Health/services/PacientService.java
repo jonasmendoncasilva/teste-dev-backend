@@ -17,6 +17,7 @@ import br.com.Health.entitys.HealthInssue;
 import br.com.Health.entitys.Pacient;
 import br.com.Health.entitys.PacientScore;
 import br.com.Health.entitys.DTO.PacientEndangered;
+import br.com.Health.exceptions.PacientsNotFoundException;
 import br.com.Health.repository.PacientRepository;
 
 @Service
@@ -25,9 +26,9 @@ public class PacientService {
 	@Autowired
 	private PacientRepository repo;
 	
-	public List<Pacient> findAll() throws Exception{
+	public List<Pacient> findAll(){
 		List<Pacient> pacients = repo.findAll();
-		if(pacients.isEmpty()) throw new Exception("There isn't pacients saved");
+		if(pacients.isEmpty()) throw new PacientsNotFoundException("There isn't pacients saved");
 		return pacients;
 	}
 
