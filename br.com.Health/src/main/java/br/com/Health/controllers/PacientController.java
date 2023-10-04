@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.Health.entitys.Pacient;
+import br.com.Health.entitys.DTO.PacientEndangered;
 import br.com.Health.services.PacientService;
 
 @RestController
@@ -49,12 +50,11 @@ public class PacientController {
 		return ResponseEntity.ok().body(client);
 	}
 	
-	@RequestMapping(value="/update")
+	@RequestMapping(value="/danger")
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<Pacient>> checkRisk(@RequestBody Pacient pacient) throws Exception{
+	public ResponseEntity<List<PacientEndangered>> checkRisk(@RequestBody Pacient pacient) throws Exception{
 		
-		List<Pacient> pacients = service.checkRisk(); 
-		
+		List<PacientEndangered> pacients = service.checkRisk(); 
 		return ResponseEntity.ok().body(pacients);
 	}
 

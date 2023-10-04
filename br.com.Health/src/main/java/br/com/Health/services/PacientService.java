@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import br.com.Health.entitys.HealthInssue;
 import br.com.Health.entitys.Pacient;
 import br.com.Health.entitys.PacientScore;
+import br.com.Health.entitys.DTO.PacientEndangered;
 import br.com.Health.repository.PacientRepository;
 
 @Service
@@ -64,27 +65,19 @@ public class PacientService {
 		return client;
 	}
 
-	public List<Pacient> checkRisk() throws Exception {
+	public List<PacientEndangered> checkRisk() throws Exception {
 		List<Pacient> pacients = repo.findAll();
+		List<PacientScore> pacientScore;
+		List<PacientScore> topPacientScore; 
 		
-		List<PacientScore> pacientScore = pacients.stream()
-				.map(pacient -> new PacientScore(pacient.getId(), calculateScore(pacient)))
-				.collect(Collectors.toList());
+		pacientScore = pacients.stream().map(pacient -> new PacientScore(pacient.getId(), calculateScore(pacient))).collect(Collectors.toList());
+		topPacientScore = pacientScore.stream().sorted(Comparator.comparingDouble(PacientScore::getScore).reversed()).limit(10).collect(Collectors.toList());
 		
-		List<PacientScore> topPacientScore = pacientScore.stream()
-				.sorted(Comparator.comparingDouble(PacientScore::getScore).reversed())
-				.limit(10).collect(Collectors.toList());
+		List<Pacient> riskGroup = createRiskGroup(pacients, topPacientScore);
 		
-		List<Pacient> riskGroup = new ArrayList<>(10);
-		
-		for(Pacient pacient : pacients) {
-			for (PacientScore topScore : topPacientScore) {
-				if(pacient.getId().equals(topScore.getId())) {
-					riskGroup.add(pacient);
-				}
-			}
-		}
-		return riskGroup;
+		List<PacientEndangered> pacientsEndangered; 
+		pacientsEndangered= riskGroup.stream().map(pacient -> new PacientEndangered(pacient)).collect(Collectors.toList());
+		return pacientsEndangered;
 	}
 
 	public Double calculateScore(Pacient pacient) {
@@ -93,5 +86,17 @@ public class PacientService {
 			sd += inssues.getRate();
 		}
 		return ( 1 / ( 1 + Math.pow(Math.E, -(-2.8 + sd)))) * 100;
+	}
+
+	public List<Pacient> createRiskGroup(List<Pacient> pacientData, List<PacientScore> topScore){
+		List<Pacient> riskGroup = new ArrayList<>(10);
+		for(Pacient pacient : pacientData) {
+			for (PacientScore topPacientScore : topScore) {
+				if(pacient.getId().equals(topPacientScore.getId())) {
+					riskGroup.add(pacient);
+				}
+			}
+		}
+		return riskGroup;
 	}
 }
