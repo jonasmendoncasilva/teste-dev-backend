@@ -65,19 +65,20 @@ public class PacientService {
 		return repo.save(p);
 	}
 
-	public Pacient savePacient(Pacient pacient) {
-		
-		try {
-			for (HealthInssue inssue : pacient.getHealthInssue()) {
-				if(inssue.getRate()<1 || inssue.getRate()>2 ) throw new InssueRateException("The Rate must be between 1 and 2");
+	public Pacient savePacient(Pacient pacient) throws InssueRateException{		
+			if(checkListInssues(pacient)==false) {
+				throw new InssueRateException("The Rate must be between 1 and 2");
 			}
-			Pacient client = repo.save(pacient);
-			return client;
-		} catch (InssueRateException e) {
-			e.getStackTrace();
-			return null;
+			return repo.save(pacient);
+	}
+
+	private boolean checkListInssues(Pacient pacient){
+		for (HealthInssue inssue : pacient.getHealthInssue()) {
+			if(inssue.getRate()<1 || inssue.getRate()>2 ) {
+				return false;
+			} 
 		}
-		
+		return true;
 	}
 
 	public List<PacientEndangered> checkRisk(){
