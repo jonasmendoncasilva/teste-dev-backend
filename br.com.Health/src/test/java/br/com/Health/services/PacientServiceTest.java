@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.TimeZone;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -120,5 +121,22 @@ public class PacientServiceTest {
 		
 		//Then
 		assertEquals("There isn't pacients saved", exception.getMessage());
+	}
+	
+	@Test
+	@DisplayName("Given A Pacient Id Object when Find By Id then Return A Pacient Object")
+	void testGivenAPacientId_whenFindById_thenReturnAPacientObject() {
+		
+		//Given
+		given(repository.findById(anyString())).willReturn(Optional.of(p1));
+		String id = "651cbd64c2d5d263cdbf8a30";
+		
+		//When
+		Pacient savedPacient = service.findById(id);
+
+		//Then
+		assertEquals(p1, savedPacient);
+		assertNotNull(savedPacient);
+		assertEquals("Maria", savedPacient.getName());
 	}
 }
