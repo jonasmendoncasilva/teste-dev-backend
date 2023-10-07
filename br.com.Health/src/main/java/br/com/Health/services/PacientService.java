@@ -81,9 +81,7 @@ public class PacientService {
 		return true;
 	}
 
-	public List<PacientEndangered> checkRisk(){
-		
-		try {
+	public List<PacientEndangered> checkRisk() throws ListSizeException{
 			List<Pacient> pacients = repo.findAll();
 		
 			if(pacients.size()<10) throw new ListSizeException("The size of list is less than 10!!!");
@@ -99,10 +97,6 @@ public class PacientService {
 			List<PacientEndangered> pacientsEndangered; 
 			pacientsEndangered= riskGroup.stream().map(pacient -> new PacientEndangered(pacient)).collect(Collectors.toList());
 			return pacientsEndangered;
-		} catch (ListSizeException e) {
-			e.printStackTrace();
-			return null;
-		}
 	}
 
 	public Double calculateScore(Pacient pacient) {
