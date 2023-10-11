@@ -65,10 +65,8 @@ public class PacientService {
 		return repo.save(p);
 	}
 
-	public Pacient savePacient(Pacient pacient) throws InssueRateException{		
-			if(checkListInssues(pacient)==false) {
-				throw new InssueRateException("The Rate must be between 1 and 2");
-			}
+	public Pacient savePacient(Pacient pacient) throws InssueRateException {		
+			if(checkListInssues(pacient)==false) throw new InssueRateException("The Rate must be between 1 and 2");
 			return repo.save(pacient);
 	}
 

@@ -5,8 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -29,7 +32,6 @@ import br.com.Health.entitys.Pacient;
 import br.com.Health.entitys.DTO.PacientEndangered;
 import br.com.Health.exceptions.InssueRateException;
 import br.com.Health.exceptions.ListSizeException;
-import br.com.Health.exceptions.PacientNotFoundException;
 import br.com.Health.exceptions.PacientsNotFoundException;
 import br.com.Health.repository.PacientRepository;
 
