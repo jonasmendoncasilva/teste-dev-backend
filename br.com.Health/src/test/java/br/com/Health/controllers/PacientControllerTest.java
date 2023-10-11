@@ -3,6 +3,7 @@ package br.com.Health.controllers;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -10,7 +11,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.TimeZone;
 
 import org.hamcrest.Matchers;
@@ -95,5 +98,27 @@ public class PacientControllerTest {
 					.andExpect(jsonPath("$.healthInssue", Matchers.hasSize(4)))
 					.andExpect(jsonPath("$.healthInssue[0].name", is(p1.getHealthInssue().get(0).getName())));
 	}
+	
+	@Test
+	@DisplayName("Given List Of Pacients when FindAll Pacients then Return Pacients List")
+	void testGivenListOfPacients_whenFindAllPacients_thenReturnPacientsList() throws Exception {
+		
+		//Given / Arrange
+		List<Pacient> pacients = new ArrayList<>();
+		pacients.addAll(Arrays.asList(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10));
+		
+		given(service.findAll()).willReturn(pacients);
+				
+		//When / Act
+		ResultActions response = mockMvc.perform(get("/pacients"));
+				
+		//Then / Assert
+		response
+		.andExpect(status().isOk())
+		.andDo(print())
+		.andExpect(jsonPath("$.size()", is(pacients.size())));
+	}
+	
+	
 	
 }
