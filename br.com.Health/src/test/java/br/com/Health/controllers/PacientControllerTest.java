@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -119,6 +120,46 @@ public class PacientControllerTest {
 		.andExpect(jsonPath("$.size()", is(pacients.size())));
 	}
 	
+	@Test
+	@DisplayName("Given Pacient Object when Create Pacient then Return Saved Pacient")
+	void testGivenPacientId_whenFindById_thenReturnPacientObject() throws Exception {
+		
+			//Given / Arrange
+			String id = "651cbd64c2d5d263cdbf8a30";
+			given(service.findById(id)).willReturn(p1);
+			
+			//When / Act
+			ResultActions response = mockMvc.perform(get("/pacients/{id}", id));
+					
+			//Then / Assert
+			response
+				.andExpect(status().isOk())
+				.andDo(print())
+				.andExpect(jsonPath("$.name", is(p1.getName())))
+				.andExpect(jsonPath("$.healthInssue", Matchers.hasSize(4)))
+				.andExpect(jsonPath("$.healthInssue[0].name", is(p1.getHealthInssue().get(0).getName())));
+	}
 	
-	
+	@Test
+	@DisplayName("Given Pacient Object when Create Pacient then Return Saved Pacient")
+	void testGivenUpdatedPacient_whenUpdate_thenReturnUpdatedPersonObject() throws Exception {
+		
+			//Given / Arrange
+			String id = "651cbd64c2d5d263cdbf8a30";
+			given(service.findById(id)).willReturn(p1);
+			given(service.update(any(Pacient.class))).willAnswer((invocation) -> invocation.getArgument(0));
+					
+			
+			//When / Act
+			ResultActions response = mockMvc.perform(put("/pacients/update")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(p2)));
+			
+			//Then / Assert
+			response.andDo(print())
+					.andExpect(status().isOk())
+					.andExpect(jsonPath("$.name", is(p2.getName())))
+					.andExpect(jsonPath("$.healthInssue", Matchers.hasSize(2)))
+					.andExpect(jsonPath("$.healthInssue[0].name", is(p2.getHealthInssue().get(0).getName())));
+	}
 }
